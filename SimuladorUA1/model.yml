@@ -1,0 +1,54 @@
+#==============================================================================
+#  LOOP-TEST  –  Topologia da figura (filas 1–3 com realimentação)
+#==============================================================================
+
+  !PARAMETERS
+arrivals:
+  Q1: 2.0                     # primeira chegada
+
+queues:
+  Q1:                         # G/G/1 
+    servers:    1
+    minArrival: 2.0           # inter-chegada externa
+    maxArrival: 4.0
+    minService: 1.0
+    maxService: 2.0
+
+  Q2:                         # G/G/2/5
+    servers:    2
+    capacity:   5
+    minService: 4.0
+    maxService: 8.0
+
+  Q3:                         # G/G/2/10
+    servers:    2
+    capacity:  10
+    minService: 5.0
+    maxService: 15.0
+
+network:
+  #––– Saídas de Q1 –––
+  - source: Q1
+    target: Q2
+    probability: 0.8
+  - source: Q1
+    target: Q3
+    probability: 0.2            # soma = 1.0 → ninguém sai direto da Q1
+
+  #––– Saídas de Q2 –––
+  - source: Q2
+    target: Q1
+    probability: 0.3
+  - source: Q2
+    target: Q3
+    probability: 0.5            # 0.2 restante → sai do sistema
+
+  #––– Saídas de Q3 –––
+  - source: Q3
+    target: Q2
+    probability: 0.7            # 0.3 restante → sai do sistema
+
+#––– Geração de pseudo-aleatórios –––
+rndnumbersPerSeed: 100000
+seeds:
+  - 42
